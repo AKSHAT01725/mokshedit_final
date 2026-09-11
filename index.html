@@ -706,15 +706,15 @@ select.loc-input option { background:var(--navy-2); color:var(--ice); font-size:
   .roundtrip-grid {
     display:flex !important;
     flex-wrap:nowrap;
-    gap:16px;
+    gap:0;
     overflow-x:auto;
     scroll-snap-type:x mandatory;
     -webkit-overflow-scrolling:touch;
-    padding:4px 6% 12px;
+    padding:4px 0 12px;
     scrollbar-width:none;
   }
   .roundtrip-grid::-webkit-scrollbar { display:none; }
-  .roundtrip-grid .rt-card { flex:0 0 100%; max-width:100%; scroll-snap-align:start; scroll-snap-stop:always; }
+  .roundtrip-grid .rt-card { flex:0 0 88% !important; max-width:88% !important; margin:0 6% !important; scroll-snap-align:center !important; scroll-snap-stop:always !important; }
 }
 @keyframes countUp { from{opacity:0; transform:translateY(12px);} to{opacity:1; transform:translateY(0);} }
 .rt-rate-num.animate { animation:countUp 0.5s cubic-bezier(0.22,1,0.36,1) both; }
@@ -2204,8 +2204,16 @@ function scrollRoundTrip(dir) {
   const grid = document.getElementById('roundtripGrid');
   if (!grid) return;
   const card = grid.querySelector('.rt-card');
-  const gap = parseFloat(getComputedStyle(grid).columnGap || getComputedStyle(grid).gap || '24') || 24;
-  const step = card ? (card.getBoundingClientRect().width + gap) : grid.clientWidth * 0.85;
+  let step;
+  if (card) {
+    const cs = getComputedStyle(card);
+    const marginLeft = parseFloat(cs.marginLeft) || 0;
+    const marginRight = parseFloat(cs.marginRight) || 0;
+    const gap = parseFloat(getComputedStyle(grid).columnGap || getComputedStyle(grid).gap || '0') || 0;
+    step = card.getBoundingClientRect().width + marginLeft + marginRight + gap;
+  } else {
+    step = grid.clientWidth * 0.85;
+  }
   grid.scrollBy({ left: dir * step, behavior: 'smooth' });
 }
 window.scrollRoundTrip = scrollRoundTrip;
