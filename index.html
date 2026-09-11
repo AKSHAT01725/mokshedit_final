@@ -604,9 +604,9 @@ select.loc-input option { background:var(--navy-2); color:var(--ice); font-size:
 .td-grid.rt-slider::-webkit-scrollbar { display:none; }
 .td-grid.rt-slider .td-card { flex:0 0 320px; scroll-snap-align:start; scroll-snap-stop:always; }
 @media (max-width:768px) {
-  .td-grid { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:16px; scrollbar-width:none; padding-bottom:4px; }
+  .td-grid { display:flex; overflow-x:auto; scroll-snap-type:x mandatory; gap:0; scrollbar-width:none; padding-bottom:4px; }
   .td-grid::-webkit-scrollbar { display:none; }
-  .td-grid .td-card { flex:0 0 84%; max-width:84%; scroll-snap-align:start; scroll-snap-stop:always; }
+  .td-grid .td-card { flex:0 0 88% !important; max-width:88% !important; margin:0 6% !important; scroll-snap-align:center !important; scroll-snap-stop:always !important; }
 }
 
 /* ── ROUND TRIP ── */
@@ -2319,8 +2319,16 @@ function scrollTripDarshan(dir) {
   const grid = document.getElementById('tripDarshanGrid');
   if (!grid) return;
   const card = grid.querySelector('.td-card');
-  const gap = parseFloat(getComputedStyle(grid).columnGap || getComputedStyle(grid).gap || '22') || 22;
-  const step = card ? (card.getBoundingClientRect().width + gap) : grid.clientWidth * 0.85;
+  let step;
+  if (card) {
+    const cs = getComputedStyle(card);
+    const marginLeft = parseFloat(cs.marginLeft) || 0;
+    const marginRight = parseFloat(cs.marginRight) || 0;
+    const gap = parseFloat(getComputedStyle(grid).columnGap || getComputedStyle(grid).gap || '0') || 0;
+    step = card.getBoundingClientRect().width + marginLeft + marginRight + gap;
+  } else {
+    step = grid.clientWidth * 0.85;
+  }
   grid.scrollBy({ left: dir * step, behavior: 'smooth' });
 }
 window.scrollTripDarshan = scrollTripDarshan;
